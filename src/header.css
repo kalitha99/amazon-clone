@@ -1,3 +1,7 @@
+a{
+  text-decoration: none !important;
+}
+
 .header {
     height: 60px;
     display: flex;
@@ -45,14 +49,16 @@
   }
   
   .header_optionBasket {
+    text-decoration: none;
     display: flex;
     align-items: center;
-    color: white;
+    color: white !important;
   }
   
   .header_basketCount {
     margin-left: 10px;
     margin-right: 10px;
+    color: white;
   }
   
   .header_nav {
@@ -66,6 +72,7 @@
     margin-left: 10px;
     margin-right: 10px;
     color: white;
+    
   }
 
   .header_searchIcon{
@@ -73,3 +80,4 @@
       height: 22px !important;
       background-color: #cd9042;
   }
+
