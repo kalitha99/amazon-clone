@@ -7,6 +7,7 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import CurrencyFormat from "react-currency-format";
 import { getBasketTotal } from "./reducer";
 import axios from "./axios";
+import { db } from "./firebase";
 
 function Payment() {
   const [{ basket, user }, dispatch] = useStateValue();
@@ -40,6 +41,7 @@ function Payment() {
   }, [basket]);
 
 console.log(clientSecret)
+
   const handleSubmit = async (event) => {
    
     event.preventDefault();
@@ -50,10 +52,22 @@ console.log(clientSecret)
         card: elements.getElement(CardElement),
       },
     }).then(({ paymentIntent }) => {
+
+      db
+      .collection('users').doc(user?.uid).collection('orders').doc(paymentIntent.id).set({
+        basket:basket,
+        amount:paymentIntent.amount,
+        created:paymentIntent.created
+      })
+
+
+
       setSucceeded(true)
       setError(null)
       setProcessing(false)
-
+      dispatch({
+        type:'EMPTY_BASKET'
+      })
       history.replace('/orders')
     })
   };
@@ -81,8 +95,8 @@ console.log(clientSecret)
             <h3>Review items and delivery</h3>
           </div>
           <div className="payment__items">
-            {basket.map((item) => (
-              <CheckoutProduct key={item.id}
+            {basket.map((item,index) => (
+              <CheckoutProduct key={index}
                 id={item.id}
                 title={item.title}
                 image={item.image}
@@ -111,7 +125,7 @@ console.log(clientSecret)
                   prefix={"$"}
                 />
                 <button disabled={processing || disabled || succeeded}>
-                  <span>{processing ? <p>Processing</p> : "Buy Now"}</span>
+                  <span>{processing ? "Processing": "Buy Now"}</span>
                 </button>
               </div>
 
